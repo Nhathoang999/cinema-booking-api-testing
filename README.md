@@ -1,77 +1,55 @@
-# Cinema Booking API
+# Cinema Booking API Testing
 
-## Project Overview
-This project is a REST API System designed for software testing practice, built with FastAPI, SQLAlchemy, and SQLite. It provides comprehensive functionality for user authentication, movie browsing, and ticket booking, along with built-in defects (such as IDOR and Negative Value injection) intentionally designed for QA and API testing exercises.
+This project contains the backend API for a Cinema Booking system, built with FastAPI, and an automated API testing suite using Postman and Newman.
 
-## Modules & Features
+## Project Structure
 
-### 1. Authentication
-- POST /api/v1/auth/register: Register a new user account.
-- POST /api/v1/auth/login: Login to obtain a JWT Bearer token.
+- /app: Contains the FastAPI application, database models, and routing logic.
+- /postman: Contains the Postman Collection and Environment files for API testing.
+- /newman: Contains the Newman configuration and runner script to execute tests automatically.
 
-### 2. Movies
-- GET /api/v1/movies: View the list of all available movies and their seating capacities.
-- GET /api/v1/movies/{id}: View detailed information of a specific movie.
+## Prerequisites
 
-### 3. Booking
-- POST /api/v1/bookings: Book tickets for a specific movie.
-- DELETE /api/v1/bookings/{id}: Cancel an existing booking.
+- Python 3.8 or higher
+- Node.js and npm (for running Newman)
 
-### 4. History
-- GET /api/v1/user/bookings: View the booking history of the authenticated user.
+## Running the API Server
 
-## Technology Stack
-- Framework: FastAPI
-- Database: SQLite
-- ORM: SQLAlchemy
-- Data Validation: Pydantic
-- Authentication: JWT (python-jose) & Password Hashing (passlib, bcrypt)
-- Testing: Pytest (Unit), Postman & Newman (API Automation)
-
-## Installation & Setup
-
-1. Create a virtual environment:
+1. Create and activate a virtual environment:
    python -m venv venv
+   Windows: venv\Scripts\activate
+   Linux/Mac: source venv/bin/activate
 
-2. Activate the virtual environment:
-   - Windows: venv\Scripts\activate
-   - Mac/Linux: source venv/bin/activate
-
-3. Install the required dependencies:
+2. Install dependencies:
    pip install -r requirements.txt
 
-4. Configure environment variables:
-   Copy `.env.example` to `.env` and adjust the configuration variables if necessary.
+3. Start the API server:
+   uvicorn app.main:app --reload
 
-5. Seed the database with sample movies:
-   python -m app.seed
+The API will be available at http://localhost:8000. You can view the Swagger documentation at http://localhost:8000/docs.
 
-6. Start the development server:
-   python -m uvicorn app.main:app --reload
+## Running Automated Tests
 
-## Testing
+1. Ensure the API server is running locally.
 
-### Swagger UI
-Once the server is running, navigate to http://localhost:8000/docs to explore the API endpoints interactively.
-
-### Automated Testing (Newman)
-The project includes a ready-to-run Postman Collection for automated testing.
-1. Navigate to the newman directory:
+2. Open a new terminal and navigate to the newman folder:
    cd newman
-2. Run the test script:
-   - Windows: run-tests.bat
-   - Mac/Linux: ./run-tests.sh
-3. View the detailed HTML execution report inside the `newman/reports` directory.
 
-### Unit Testing (Pytest)
-To execute the backend unit tests:
-   python -m pytest
+3. Install Newman and the HTMLExtra reporter:
+   npm install
 
-## Automated Test Cases & Defect Reports
-Please refer to the following documents in the root directory for testing materials:
-- REQUIREMENTS.md: Business and functional requirements.
-- TEST_SCENARIOS.md: Test scenario outlines.
-- TEST_CASES.md: Detailed API test cases (Positive, Negative, Boundary, Security).
-- POSTMAN_SCRIPTS.md: JavaScript automation scripts used in the collection.
-- TEST_EXECUTION_REPORT.md: Summary of test executions.
-- DEFECT_REPORT.md: Found vulnerabilities and bugs (e.g., BUG-001, BUG-002).
+4. Run the test suite:
+   Windows: run-tests.bat
+   Linux/Mac: npm test
+
+5. View the test report:
+   A detailed HTML report will be generated in the newman/reports directory. Open report.html in any web browser to view the test results.
+
+## Endpoints Tested
+
+- POST /api/v1/auth/register : Registers a new user with dynamic email generation.
+- POST /api/v1/auth/login : Authenticates the user and retrieves a JWT token.
+- GET /api/v1/movies : Returns a list of available movies.
+- POST /api/v1/bookings : Creates a new booking using the authenticated token.
+- DELETE /api/v1/bookings/{id} : Cancels the previously created booking.
+- GET /api/v1/user/bookings : Retrieves the booking history for the logged-in user.
