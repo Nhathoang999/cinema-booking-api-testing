@@ -1,0 +1,12 @@
+{
+  "name": "cinema-booking-api-newman",
+  "version": "1.0.0",
+  "description": "Newman API test automation for Cinema Booking API",
+  "scripts": {
+    "test": "newman run ../Cinema_Booking_API.postman_collection.json --env-var \"baseUrl=http://localhost:8000\" -r cli,htmlextra --reporter-htmlextra-export ./reports/report.html"
+  },
+  "dependencies": {
+    "newman": "^6.1.0",
+    "newman-reporter-htmlextra": "^1.23.0"
+  }
+}
