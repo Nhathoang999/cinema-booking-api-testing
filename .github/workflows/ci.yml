@@ -35,19 +35,19 @@ jobs:
     - name: Start FastAPI Backend
       run: |
         # In a real environment, you'd want to run uvicorn in background and wait for it
-        # uvicorn app.main:app --host 0.0.0.0 --port 8000 &
-        # sleep 5
-        echo "Backend started (stub)"
+        uvicorn app.main:app --host 0.0.0.0 --port 8000 &
+        sleep 5
+        echo "Backend started"
 
     - name: Run API Tests (Newman)
       run: |
-        echo "Running Newman (stub)"
-        # newman run Cinema_Booking_API.postman_collection.json -r cli,htmlextra --reporter-htmlextra-export reports/newman/report.html
+        echo "Running Newman"
+        newman run Cinema_Booking_API.postman_collection.json -r cli,htmlextra --reporter-htmlextra-export reports/newman/report.html
 
     - name: Run API Tests (Pytest)
       run: |
-        echo "Running Pytest (stub)"
-        # pytest tests/
+        echo "Running Pytest"
+        pytest tests/
 
     - name: Verify Database
       run: python scripts/verify-db.py
