@@ -1,0 +1,1 @@
+FAILED tests/test_movies.py::test_search_case_insensitive - assert 404 == 200

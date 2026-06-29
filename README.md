@@ -1,5 +1,5 @@
 # Cinema Booking API Testing
-**Manual Testing • API Automation • AI-assisted QA • Azure DevOps**
+**Manual Testing | API Automation | AI-assisted QA | Azure DevOps**
 
 This project demonstrates an end-to-end Enterprise QA workflow for a RESTful Cinema Booking API. It covers requirement analysis, manual testing, API automation, database validation, AI-assisted test design, and CI/CD integration.
 
@@ -13,30 +13,24 @@ The goal of this repository is to showcase a structured approach to Quality Assu
 The project strictly follows a traceability and execution pipeline:
 
 ```ascii
-Business Requirements
-        │
-        ▼
-Functional Requirements
-        │
-        ▼
+Project Workflow
+
+Requirements
+      ↓
 User Stories
-        │
-        ▼
+      ↓
 Acceptance Criteria
-        │
-        ▼
-Test Scenarios & Cases
-        │
-        ▼
-API Automation (Newman/Pytest)
-        │
-        ▼
-Database Validation
-        │
-        ▼
-Metrics & Reports
-        │
-        ▼
+      ↓
+Test Scenarios
+      ↓
+Test Cases
+      ↓
+API Automation
+      ↓
+Regression
+      ↓
+Defect Reporting
+      ↓
 Release
 ```
 

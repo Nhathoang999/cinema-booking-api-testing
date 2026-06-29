@@ -82,3 +82,8 @@ app.include_router(auth.router)
 app.include_router(movies.router)
 app.include_router(bookings.router)
 app.include_router(history.router)
+
+@app.get("/health", tags=["Health"])
+def health_check():
+    return {"status": "ok"}
+

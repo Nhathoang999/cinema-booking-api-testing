@@ -1,36 +1,43 @@
 import sqlite3
 import os
+import sys
 
 DB_PATH = os.path.join(os.path.dirname(__file__), '..', 'cinema.db')
 
-def verify_booking_created(email, expected_movie_id):
-    """Verifies that a user has a booking for the specified movie."""
+def verify_booking_created(target_username="qa_automation_user"):
+    """Verifies that the automated test user has a booking."""
+    if not os.path.exists(DB_PATH):
+        print(f"[-] Database {DB_PATH} not found.")
+        sys.exit(1)
+        
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     
-    # In a real app, you would join users and bookings, but this assumes a simple schema
     try:
-        cursor.execute("SELECT id FROM users WHERE email = ?", (email,))
+        cursor.execute("SELECT id, email FROM users WHERE username = ?", (target_username,))
         user_row = cursor.fetchone()
-        assert user_row is not None, f"User {email} not found in DB."
+        
+        if not user_row:
+            print(f"[-] Verify DB Failed: User with username '{target_username}' not found in DB.")
+            sys.exit(1)
+            
         user_id = user_row[0]
+        email = user_row[1]
         
         cursor.execute("SELECT movie_id FROM bookings WHERE user_id = ? AND status != 'CANCELLED'", (user_id,))
         bookings = cursor.fetchall()
-        movie_ids = [b[0] for b in bookings]
         
-        assert expected_movie_id in movie_ids, f"Movie {expected_movie_id} booking not found for user {email}"
-        print("Booking Created: PASS")
+        if not bookings:
+            print(f"[-] Verify DB Failed: No active bookings found for user '{email}'")
+            sys.exit(1)
+            
+        print(f"[+] Verify DB Passed: Found {len(bookings)} active bookings for test user '{email}'.")
     except Exception as e:
-        print(f"Booking Verification FAILED: {e}")
-        raise
+        print(f"[-] Booking Verification FAILED: {e}")
+        sys.exit(1)
     finally:
         conn.close()
 
 if __name__ == "__main__":
-    # Example usage during pipeline execution
-    # In reality, this would dynamically read the test user email used in the API test run
-    print("Database Verification Running...")
-    # This acts as a stub to show the DB assertion capability for the portfolio
-    print("DB Schema connected and validation ready.")
-    pass
+    print("Running Database State Verification...")
+    verify_booking_created()

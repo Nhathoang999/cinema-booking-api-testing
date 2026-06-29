@@ -1,5 +1,6 @@
 import pytest
 import requests
+import uuid
 
 BASE_URL = "http://localhost:8000/api/v1"
 
@@ -8,18 +9,23 @@ def api_url():
     return BASE_URL
 
 @pytest.fixture(scope="session")
-def auth_token(api_url):
+def test_user():
+    """Generates deterministic user data for the session."""
+    return {
+        "username": "qa_automation_user",
+        "email": f"qa_{uuid.uuid4().hex[:8]}@example.com",
+        "password": "Password123!"
+    }
+
+@pytest.fixture(scope="session")
+def auth_token(api_url, test_user):
     """Fixture to register and login a user, returning the JWT token."""
-    # Since email needs to be unique, we can generate a random one or use a test one.
-    import uuid
-    email = f"test_{uuid.uuid4().hex[:8]}@example.com"
-    password = "TestPassword123!"
-    
     # Register
-    requests.post(f"{api_url}/auth/register", json={"email": email, "password": password})
+    requests.post(f"{api_url}/auth/register", json=test_user)
     
     # Login
-    response = requests.post(f"{api_url}/auth/login", json={"email": email, "password": password})
+    login_payload = {"email": test_user["email"], "password": test_user["password"]}
+    response = requests.post(f"{api_url}/auth/login", json=login_payload)
     if response.status_code == 200:
-        return response.json().get("access_token")
+        return response.json().get("token")
     return None

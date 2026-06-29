@@ -1,39 +1,46 @@
 import os
-import time
+import sys
+import subprocess
+import requests
 
-def run_step(name, delay=1):
+def check_health():
+    print("[*] Running: API Health Check (GET /health)...")
+    try:
+        response = requests.get("http://localhost:8000/health", timeout=5)
+        if response.status_code == 200:
+            print("[+] PASS: API is healthy.\n")
+            return True
+    except Exception:
+        pass
+    print("[-] FAIL: API is not running.")
+    print("Please start FastAPI first:\n    python -m uvicorn app.main:app\n")
+    return False
+
+def run_command(name, command):
     print(f"[*] Running: {name}...")
-    time.sleep(delay)
-    print(f"[+] PASS: {name}\n")
+    try:
+        result = subprocess.run(command, shell=True, check=True)
+        print(f"[+] PASS: {name}\n")
+    except subprocess.CalledProcessError:
+        print(f"[-] FAIL: {name}\n")
+        sys.exit(1)
 
 def main():
     print("=========================================")
-    print("      QA Automation Runner (Mock)        ")
+    print("      QA Automation Runner               ")
     print("=========================================\n")
     
-    # 1. Health Check API
-    run_step("API Health Check (GET /health)")
+    if not check_health():
+        sys.exit(1)
+        
+    os.makedirs('reports/newman', exist_ok=True)
+    os.makedirs('reports/pytest', exist_ok=True)
     
-    # 2. API Tests (Newman)
-    run_step("Newman Postman Collection (API Contract & E2E)")
-    
-    # 3. Pytest
-    run_step("Pytest Suite (test_auth.py, test_booking.py)")
-    
-    # 4. Verify Database
-    run_step("Database State Verification (verify-db.py)")
-    
-    # 5. Generate Metrics
-    run_step("Generate Automated Metrics (generate_metrics.py)")
-    
-    # 6. Generate RTM
-    run_step("Generate Traceability Matrix (generate_rtm.py)")
-    
-    # 7. Generate QA Dashboard
-    run_step("Compile Final QA Dashboard (qa-dashboard.md)")
-    
-    # 8. Archive Reports
-    run_step("Archive Output to reports/generated")
+    run_command("Newman API Automation", "npx newman run Cinema_Booking_API.postman_collection.json -r cli,json --reporter-json-export reports/newman/report.json")
+    run_command("Pytest Test Suite", "python -m pytest tests/ --junitxml=reports/pytest/junit.xml -v")
+    run_command("Database Verification", "python scripts/verify-db.py")
+    run_command("Generate Metrics & Dashboard", "python scripts/generate_metrics.py")
+    run_command("Generate Traceability Matrix", "python scripts/generate_rtm.py")
 
     print("=========================================")
     print("      E2E QA WORKFLOW COMPLETED          ")
