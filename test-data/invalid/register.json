@@ -1,0 +1,12 @@
+[
+  {
+    "email": "invalid_email.com",
+    "password": "Password123!",
+    "expected_status": 422
+  },
+  {
+    "email": "user@example.com",
+    "password": "",
+    "expected_status": 422
+  }
+]

@@ -1,0 +1,9 @@
+pytest
+pytest-cov
+requests
+openpyxl
+google-generativeai
+black
+isort
+flake8
+pre-commit

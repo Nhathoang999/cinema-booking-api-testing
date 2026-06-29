@@ -89,6 +89,32 @@
 			"item": [
 				{
 					"name": "Get All Movies",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const schema = {",
+									"  \"type\": \"array\",",
+									"  \"items\": {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"      \"id\": { \"type\": \"number\" },",
+									"      \"title\": { \"type\": \"string\" },",
+									"      \"duration\": { \"type\": \"number\" },",
+									"      \"genre\": { \"type\": \"string\" }",
+									"    },",
+									"    \"required\": [\"id\", \"title\", \"duration\", \"genre\"]",
+									"  }",
+									"};",
+									"pm.test(\"Schema validation\", function() {",
+									"    pm.response.to.have.jsonSchema(schema);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],

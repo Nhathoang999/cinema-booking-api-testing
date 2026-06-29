@@ -1,0 +1,14 @@
+[
+  {
+    "email": "a@b.c",
+    "password": "12345",
+    "expected_status": 422,
+    "description": "Password too short (5 chars)"
+  },
+  {
+    "email": "a@b.c",
+    "password": "123456",
+    "expected_status": 201,
+    "description": "Password exactly 6 chars"
+  }
+]
