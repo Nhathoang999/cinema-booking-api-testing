@@ -1,0 +1,61 @@
+trigger:
+  - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  pythonVersion: '3.12'
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '$(pythonVersion)'
+  displayName: 'Use Python $(pythonVersion)'
+
+- script: |
+    python -m pip install --upgrade pip
+    pip install -r requirements.txt
+    pip install -r requirements-dev.txt
+  displayName: 'Install dependencies'
+
+- script: |
+    python app/main.py &
+    sleep 5
+  displayName: 'Start FastAPI Backend'
+
+- task: NodeTool@0
+  inputs:
+    versionSpec: '18.x'
+  displayName: 'Install Node.js'
+
+- script: |
+    npm install -g newman newman-reporter-htmlextra
+    newman run Cinema_Booking_API.postman_collection.json -r cli,htmlextra --reporter-htmlextra-export reports/newman/report.html
+  displayName: 'Run API Automation (Newman)'
+
+- script: |
+    pytest tests/ --junitxml=reports/pytest/junit.xml
+  displayName: 'Run API Test Framework (Pytest)'
+
+- script: |
+    python scripts/verify-db.py
+  displayName: 'Run Database State Validation'
+
+- script: |
+    python scripts/generate_metrics.py
+    python scripts/generate_rtm.py
+  displayName: 'Generate Metrics and RTM'
+
+- task: PublishTestResults@2
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: 'reports/pytest/junit.xml'
+    failTaskOnFailedTests: true
+  displayName: 'Publish Pytest Results'
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: 'reports/'
+    artifactName: 'QA_Reports'
+  displayName: 'Publish QA Reports Artifact'

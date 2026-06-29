@@ -1,55 +1,99 @@
 # Cinema Booking API Testing
+**Manual Testing • API Automation • AI-assisted QA • Azure DevOps**
 
-This project contains the backend API for a Cinema Booking system, built with FastAPI, and an automated API testing suite using Postman and Newman.
+This project demonstrates an end-to-end Enterprise QA workflow for a RESTful Cinema Booking API. It covers requirement analysis, manual testing, API automation, database validation, AI-assisted test design, and CI/CD integration.
 
-## Project Structure
+---
 
-- /app: Contains the FastAPI application, database models, and routing logic.
-- /postman: Contains the Postman Collection and Environment files for API testing.
-- /newman: Contains the Newman configuration and runner script to execute tests automatically.
+## 1. Overview
+The goal of this repository is to showcase a structured approach to Quality Assurance, bridging the gap between Business Analysis (BA) and Automation Engineering. The API under test is built with FastAPI and SQLite.
 
-## Prerequisites
+## 2. Architecture & QA Workflow
 
-- Python 3.8 or higher
-- Node.js and npm (for running Newman)
+The project strictly follows a traceability and execution pipeline:
 
-## Running the API Server
+```ascii
+Business Requirements
+        │
+        ▼
+Functional Requirements
+        │
+        ▼
+User Stories
+        │
+        ▼
+Acceptance Criteria
+        │
+        ▼
+Test Scenarios & Cases
+        │
+        ▼
+API Automation (Newman/Pytest)
+        │
+        ▼
+Database Validation
+        │
+        ▼
+Metrics & Reports
+        │
+        ▼
+Release
+```
 
-1. Create and activate a virtual environment:
-   python -m venv venv
-   Windows: venv\Scripts\activate
-   Linux/Mac: source venv/bin/activate
+## 3. Features
+- **Requirements Traceability**: Python-generated RTM linking BRs down to Test Cases.
+- **AI Gap Analysis**: Human-in-the-loop Gemini API script that reviews existing test cases and suggests missing boundary conditions.
+- **API Contract Validation**: Postman JSON schema validation.
+- **Multi-layer Automation**: End-to-End flows tested in Newman, unit/integration layer tested in Pytest.
+- **Database Verification**: Python scripts directly query SQLite to assert backend states.
 
-2. Install dependencies:
-   pip install -r requirements.txt
+## 4. Tech Stack
+- **API**: FastAPI, Python 3.12, SQLite
+- **Automation**: Postman, Newman, Pytest, `requests`
+- **CI/CD & DevOps**: Docker, Azure Pipelines, GitHub Actions
+- **AI/Scripting**: Google Generative AI (Gemini), `openpyxl`, `pandas`
 
-3. Start the API server:
-   uvicorn app.main:app --reload
+## 5. Project Structure
+See `docs/environment.md` for full environment specs.
+- `docs/`: Planning, requirements, strategies, risk analysis.
+- `artifacts/templates/`: Test case and RTM Excel templates.
+- `ai/`: Gap analysis scripts and QA review outcomes.
+- `tests/`: Pytest fixtures and assertions.
+- `test-data/`: JSON datasets for data-driven testing.
+- `scripts/`: Orchestration (`run-all.py`) and DB validation.
 
-The API will be available at http://localhost:8000. You can view the Swagger documentation at http://localhost:8000/docs.
+## 6. Quick Start
 
-## Running Automated Tests
+**Run the API locally (Docker):**
+```bash
+docker-compose up -d
+```
 
-1. Ensure the API server is running locally.
+**Run the QA Automation Workflow:**
+```bash
+python scripts/run-all.py
+```
+This script acts as the QA Automation Runner executing health checks, Newman, Pytest, DB assertions, and metrics generation.
 
-2. Open a new terminal and navigate to the newman folder:
-   cd newman
+## 7. Defect Management Lifecycle
+```
+New -> Assigned -> In Progress -> Resolved -> Retest -> Closed
+```
+*(Duplicate, Rejected, and Deferred states are utilized where applicable).*
 
-3. Install Newman and the HTMLExtra reporter:
-   npm install
+## 8. CI/CD Integration
+The project features dual-pipeline architecture:
+- **Azure DevOps**: Primary enterprise pipeline handling artifacts, test plans, and boards.
+- **GitHub Actions**: Public-facing CI workflow demonstrating automated test execution on push.
 
-4. Run the test suite:
-   Windows: run-tests.bat
-   Linux/Mac: npm test
+## 9. Documentation
+- [QA Dashboard (Metrics & Coverage)](reports/qa-dashboard.md)
+- [Test Plan](docs/test-plan.md)
+- [Test Strategy & Design Techniques](docs/test-strategy.md)
+- [Requirements & Traceability](docs/requirements.md)
+- [AI QA Gap Analysis](ai/review-result.md)
 
-5. View the test report:
-   A detailed HTML report will be generated in the newman/reports directory. Open report.html in any web browser to view the test results.
-
-## Endpoints Tested
-
-- POST /api/v1/auth/register : Registers a new user with dynamic email generation.
-- POST /api/v1/auth/login : Authenticates the user and retrieves a JWT token.
-- GET /api/v1/movies : Returns a list of available movies.
-- POST /api/v1/bookings : Creates a new booking using the authenticated token.
-- DELETE /api/v1/bookings/{id} : Cancels the previously created booking.
-- GET /api/v1/user/bookings : Retrieves the booking history for the logged-in user.
+## 10. Future Improvements
+- Performance Testing using **k6**
+- Security Testing utilizing **OWASP ZAP**
+- Accessibility Testing utilizing **axe-core** (if UI is developed)
