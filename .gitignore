@@ -17,7 +17,11 @@ ENV/
 
 # Test caches
 .pytest_cache/
-reports/
+reports/generated/
+reports/newman/
+reports/pytest/
+reports/metrics/
+logs/
 
 # IDEs
 .vscode/
