@@ -34,7 +34,7 @@ jobs:
 
     - name: Start FastAPI Backend
       run: |
-        python app/seed.py
+        PYTHONPATH=. python app/seed.py
         # In a real environment, you'd want to run uvicorn in background and wait for it
         uvicorn app.main:app --host 0.0.0.0 --port 8000 &
         sleep 5
